@@ -1,131 +1,206 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <link rel="icon" href="{{ asset('landing/img/favicon.png') }}" type="image/png" />
-    <title>Edustage Education</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('landing/css/bootstrap.css') }}" />
-    <link rel="stylesheet" href="{{ asset('landing/css/flaticon.css') }}" />
-    <link rel="stylesheet" href="{{ asset('landing/css/themify-icons.css') }}" />
-    <link rel="stylesheet" href="{{ asset('landing/vendors/owl-carousel/owl.carousel.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('landing/vendors/nice-select/css/nice-select.css') }}" />
-    <!-- main css -->
-    <link rel="stylesheet" href="{{ asset('landing/css/style.css') }}" />
-  </head>
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-  <body>
-    <!--================ Start Header Menu Area =================-->
-    <header class="header_area">
-      <div class="main_menu">
-        <div class="search_input" id="search_input_box">
-          <div class="container">
-            <form class="d-flex justify-content-between" method="" action="">
-              <input
-                type="text"
-                class="form-control"
-                id="search_input"
-                placeholder="Search Here"
-              />
-              <button type="submit" class="btn"></button>
-              <span
-                class="ti-close"
-                id="close_search"
-                title="Close Search"
-              ></span>
-            </form>
-          </div>
-        </div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <nav class="navbar navbar-expand-lg navbar-light">
-          <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <a class="navbar-brand logo_h" href="index.html"
-              ><img src="{{ asset('landing/img/logo.png') }}" alt=""
-            /></a>
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-toggle="collapse"
-              data-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="icon-bar"></span> <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div
-              class="collapse navbar-collapse offset"
-              id="navbarSupportedContent"
-            >
-              <ul class="nav navbar-nav menu_nav ml-auto">
-                <li class="nav-item active">
-                  <a class="nav-link" href="{{ url('') }}">Home</a>
-                </li>
-                @guest
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url('register') }}">Register</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url('login') }}">Login</a>
-                  </li>
-                @endguest
-                @auth
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url('calon_mahasiswa/form') }}">Formulir</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
-                    document.getElementById('logout-form').submit();">Logout</a>
-                  </li>
-                  <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                      @csrf
-                  </form>    
-                @endauth
-              </ul>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ config('app.name', 'Laravel') }}</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{{ asset('css/sb-admin-2.css') }}" rel="stylesheet">
+
+    {{-- Vendor --}}
+    <link rel="stylesheet" href="{{ asset('vendor/datatables/dataTables.bootstrap4.css') }} ">
+    <link rel="stylesheet" href="{{ asset('vendor/select2/select2.min.css') }} ">
+    <link rel="stylesheet" href="{{ asset('vendor/select2/select2-bootstrap.min.css') }} ">
+    <link rel="stylesheet" href="{{ asset('vendor/tempusdominus-datetimepicker/tempusdominus-datetimepicker.css') }}">
+    @stack('css')
+
+</head>
+
+<body>
+
+    <body id="page-top">
+
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+            @include('layouts.sidebar')
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                        <!-- Sidebar Toggle (Topbar) -->
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
+
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
+
+                            <div class="topbar-divider d-none d-sm-block"></div>
+
+                            <!-- Nav Item - User Information -->
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ auth()->user()->name }}</span>
+                                    <i class="fa fa-user-circle"></i>
+                                </a>
+                                <!-- Dropdown - User Information -->
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                    aria-labelledby="userDropdown">
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#changePasswordModal">
+                                        <i class="fas fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Ubah Password
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+
+                    </nav>
+                    <!-- End of Topbar -->
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        @yield('content')
+                    </div>
+                    <!-- /.container-fluid -->
+
+                </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Bernitek 2019</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
             </div>
-          </div>
-        </nav>
-      </div>
-    </header>
-    <!--================ End Header Menu Area =================-->
+            <!-- End of Content Wrapper -->
 
-    @yield('content')
-
-    <!--================ Start footer Area  =================-->
-    <footer class="footer-area">
-      <div class="container">
-        <div class="row footer-bottom d-flex justify-content-between">
-          <p class="col-lg-8 col-sm-12 footer-text m-0 text-white">
-            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ti-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-          </p>
         </div>
-      </div>
-    </footer>
-    <!--================ End footer Area  =================-->
+        <!-- End of Page Wrapper -->
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="{{ asset('landing/js/jquery-3.2.1.min.js') }}"></script>
-    <script src="{{ asset('landing/js/popper.js') }}"></script>
-    <script src="{{ asset('landing/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('landing/vendors/nice-select/js/jquery.nice-select.min.js') }}"></script>
-    <script src="{{ asset('landing/vendors/owl-carousel/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('landing/js/owl-carousel-thumb.min.js') }}"></script>
-    <script src="{{ asset('landing/js/jquery.ajaxchimp.min.js') }}"></script>
-    <script src="{{ asset('landing/js/mail-script.js') }}"></script>
-    <!--gmaps Js-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
-    <script src="{{ asset('landing/js/gmaps.min.js') }}"></script>
-    <script src="{{ asset('landing/js/theme.js') }}"></script>
-  </body>
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ingin mengakhiri sesi?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Klik tombol "Logout" dibawah untuk mengakhiri sesi anda.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+                        <a class="btn btn-primary" href="{{ route('logout') }}" onclick="event.preventDefault();
+                        document.getElementById('logout-form').submit();">Logout</a>
+                        
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ubah Password</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form" action="{{ url('user/change-password/'.auth()->user()->id) }}">
+                            <div class="form-group">
+                                <label for="">Password Lama</label>
+                                <input type="password" name="old_password" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Password Baru</label>
+                                <input type="password" name="new_password" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Konfirmasi Password Baru</label>
+                                <input type="password" name="new_password_confirmation" class="form-control" autocomplete="off">
+                            </div>
+                            <button class="btn btn-primary submit float-right" type="button">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
+        <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+        <script src="{{ asset('js/main.js') }}"></script>
+
+        <!-- Page level plugins -->
+        <script src="{{ asset('vendor/sweetalert2/sweetalert2.min.js') }}"></script>
+        <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+        <script src="{{ asset('vendor/select2/select2.min.js') }} "></script>
+        <script src="{{ asset('vendor/tempusdominus-datetimepicker/tempusdominus-datetimepicker.min.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    beforeSend: function() {
+                        $('button').prop('disabled', true);
+                    },
+                    complete: function () {
+                        $('button').prop('disabled', false);
+                    }
+                });
+            });
+        </script>
+        @stack('js')
+    </body>
+
 </html>

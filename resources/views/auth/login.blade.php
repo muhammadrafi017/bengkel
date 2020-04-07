@@ -79,10 +79,9 @@
                                         </button>
                                     </form>
                                     <hr>
-                                    <div class="text-center">
+                                    {{-- <div class="text-center">
                                         <a class="small" href="{{ url('register') }}">Belum punya akun? registrasi</a><br>
-                                        <a class="small" href="{{ url('') }}">Kembali ke halaman utama</a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

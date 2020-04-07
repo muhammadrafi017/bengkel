@@ -15,14 +15,16 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nama_lengkap');
+            $table->string('nama');
             $table->string('no_handphone');
+            $table->string('alamat');
             $table->string('email')->unique();
             $table->string('password');
+            $table->tinyInteger('is_owner')->default(0);
             $table->tinyInteger('is_admin')->default(0);
-            $table->tinyInteger('is_user')->default(0);
-            $table->tinyInteger('status')->default(0);
-            $table->enum('position', ['-', 'pembayaran-formulir', 'pengisian-data', 'tes-masuk', 'pembayaran-administrasi']);
+            $table->tinyInteger('is_member')->default(0);
+            $table->string('kode')->nullable();
+            $table->integer('point')->default(0);
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

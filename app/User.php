@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nama_lengkap', 'no_handphone', 'email', 'password', 'is_admin', 'is_user', 'status', 'deleted_at'
+        'nama_lengkap', 'no_handphone', 'email', 'password', 'is_owner', 'is_admin', 'is_member', 'kode'
     ];
 
     /**
@@ -37,26 +37,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function isAdmin()
+    public function hasAnyActors($actors)
     {
-        if ($this->is_admin) {
+      if (is_array($actors)) {
+        foreach ($actors as $actor) {
+          if ($this->{'is_'.$actor}) {
             return true;
-        } else {
-            return false;
+          }
         }
-    }
-    public function tagihan()
-    {
-        return $this->hasMany('App\Tagihan', 'id_user', 'id');
-    }
-
-    public function tagihanFormulir()
-    {
-        return Tagihan::where('id_user', $this->id)->where('nama', 'formulir')->where('status', 'belum-lunas')->first();
-    }
-    
-    public function tagihanAdmisi()
-    {
-        return Tagihan::where('id_user', $this->id)->where('nama', 'admisi')->where('status', 'belum-lunas')->first();
+        return false;
+      } else {
+        if ($this->{'is_'.$actors}) {
+          return true;
+        }
+        return false;
+      }
     }
 }

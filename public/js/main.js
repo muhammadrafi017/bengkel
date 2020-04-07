@@ -2,7 +2,9 @@ let base_url = $('meta[name="base_url"]').attr('content');
 let table, modal, opened_modal;
 
 $(document).ready(function() {
-    $('.select2plain').select2();
+    $('.select2plain').select2({
+        width: '100%'
+    });
 });
 
 $(document).on('show.bs.modal', '.modal', function() {

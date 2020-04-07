@@ -15,111 +15,100 @@ use Illuminate\Support\Facades\Storage;
 
 Route::get('', function() {
     if (auth()->user()) {
-        if (auth()->user()->isAdmin()) {
-            return redirect('admin/dashboard');
-        } else {
-            return redirect('user/calon-mahasiswa/formulir');
-        }
+        return redirect('dashboard');
     } else {
-        return redirect('home');
+        return redirect('login');
     }
-});
-Route::get('home', 'LandingController@index');
-Route::get('detail-jurusan/{id}', 'LandingController@detailJurusan');
-
-Route::get('password', function() {
-    return bcrypt('password');
 });
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-Route::post('register', 'Auth\RegisterController@register')->name('doRegister');
+Route::get('nota/tracking', 'NotaController@tracking');
+Route::post('nota/tracking', 'NotaController@trackingProcess');
 
-Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
+Route::group(['middleware' => 'auth'], function() {
 
-    Route::group(['prefix' => 'dashboard', 'middleware' => 'admin'], function() {
+    Route::group(['middleware' => 'actor:owner,admin,member'], function() {
+        Route::post('kupon/list', 'KuponController@list');
+        Route::post('service/list', 'ServiceController@list');
+        Route::post('mekanik/list', 'MekanikController@list');
+    });
+
+    Route::group(['prefix' => 'dashboard', 'middleware' => 'actor:owner,admin'], function() {
         Route::get('', 'DashboardController@index');
     });
 
-    Route::group(['prefix' => 'setting', 'middleware' => 'admin'], function() {
-        Route::get('profile', 'SettingController@profile');
-        Route::post('profile/update', 'SettingController@profileUpdate');
+    Route::group(['prefix' => 'user', 'middleware' => 'actor:owner,admin,member'], function() {
+        Route::get('', 'UserController@index');
+        Route::post('change-password/{id}', 'UserController@changePassword');
+        Route::post('find-member', 'UserController@findMember');
     });
 
-    Route::group(['prefix' => 'user', 'middleware' => 'admin'], function() {
-        Route::get('index', 'UserController@index');
-        Route::get('form/{type}/{id?}', 'UserController@form');
-        Route::post('store', 'UserController@store');
-        Route::post('update/{id}', 'UserController@update');
-        Route::post('change-password/{id}', 'UserController@changePassword');
-        Route::post('status/{id}', 'UserController@status');
-        Route::delete('delete/{id}', 'UserController@delete');
+    Route::group(['prefix' => 'kupon', 'middleware' => 'actor:owner'], function() {
+        Route::get('', 'KuponController@index');
+        Route::get('form/{type}/{id?}', 'KuponController@form');
+        Route::post('store', 'KuponController@store');
+        Route::post('update/{id}', 'KuponController@update');
+        Route::delete('delete/{id}', 'KuponController@delete');
+    });
 
-        Route::group(['prefix' => 'group'], function() {
-            Route::post('list', 'UserController@groupList');
+    Route::group(['prefix' => 'mekanik', 'middleware' => 'actor:owner'], function() {
+        Route::get('', 'MekanikController@index');
+        Route::get('form/{type}/{id?}', 'MekanikController@form');
+        Route::post('store', 'MekanikController@store');
+        Route::post('update/{id}', 'MekanikController@update');
+        Route::delete('delete/{id}', 'MekanikController@delete');
+    });
+
+    Route::group(['prefix' => 'service', 'middleware' => 'actor:owner'], function() {
+        Route::get('', 'ServiceController@index');
+        Route::get('form/{type}/{id?}', 'ServiceController@form');
+        Route::post('store', 'ServiceController@store');
+        Route::post('update/{id}', 'ServiceController@update');
+        Route::delete('delete/{id}', 'ServiceController@delete');
+    });
+
+    Route::group(['prefix' => 'service-barang', 'middleware' => 'actor:owner,admin'], function() {
+        Route::get('', 'ServiceBarangController@index');
+        Route::get('order', 'ServiceBarangController@order');
+        Route::get('form/create', 'ServiceBarangController@form');
+        Route::post('list', 'ServiceBarangController@list');
+        Route::post('store', 'ServiceBarangController@store');
+        Route::post('store-order', 'ServiceBarangController@storeOrder');
+        Route::post('status/{id?}', 'ServiceBarangController@updateStatus');
+        Route::post('progres', 'ServiceBarangController@updateProgres');
+        Route::get('report/execution/{start_date}/{end_date}', 'ServiceBarangController@reportExecution');
+        Route::get('report/cumulative/{start_date}/{end_date}', 'ServiceBarangController@reportCumulative');
+
+        Route::group(['prefix' => 'nota'], function() {
+            Route::post('list', 'ServiceBarangController@listNotaService');
+        });
+        Route::group(['prefix' => 'barang'], function() {
+            Route::post('list-by-nota', 'ServiceBarangController@listBarangByNota');
         });
     });
 
-    Route::group(['prefix' => 'gelombang', 'middleware' => 'admin'], function() {
-        Route::get('index', 'GelombangController@index');
-        Route::get('form/{type}/{id?}', 'GelombangController@form');
-        Route::post('store', 'GelombangController@store');
-        Route::post('update/{id}', 'GelombangController@update');
-        Route::delete('delete/{id}', 'GelombangController@delete');
-    });
-    Route::group(['prefix' => 'kategori-jurusan', 'middleware' => 'admin'], function() {
-        Route::get('index', 'KategoriJurusanController@index');
-        Route::post('list', 'KategoriJurusanController@list');
-        Route::get('form/{type}/{id?}', 'KategoriJurusanController@form');
-        Route::post('store', 'KategoriJurusanController@store');
-        Route::post('update/{id}', 'KategoriJurusanController@update');
-        Route::delete('delete/{id}', 'KategoriJurusanController@delete');
-    });
-    Route::group(['prefix' => 'jurusan', 'middleware' => 'admin'], function() {
-        Route::get('index', 'JurusanController@index');
-        Route::get('form/{type}/{id?}', 'JurusanController@form');
-        Route::post('store', 'JurusanController@store');
-        Route::post('update/{id}', 'JurusanController@update');
-        Route::delete('delete/{id}', 'JurusanController@delete');
-    });
-    Route::group(['prefix' => 'peminat', 'middleware' => 'admin'], function() {
-        Route::get('index', 'PeminatController@index');
-        Route::get('form/{type}/{id?}', 'PeminatController@form');
-        Route::post('store', 'PeminatController@store');
-        Route::post('update/{id}', 'PeminatController@update');
-        Route::post('status/{id}', 'PeminatController@status');
-        Route::delete('delete/{id}', 'PeminatController@delete');
+    Route::group(['prefix' => 'nota'], function() {
+        Route::group(['prefix' => 'service'], function() {
+            Route::get('', 'NotaServiceController@index');
+            Route::post('payment/{id}', 'NotaServiceController@updatePayment');
+            Route::post('taking/{id}', 'NotaServiceController@updateTaking');
+            Route::get('print/{id}', 'NotaServiceController@print');
+            Route::get('report/earning/{start_date}/{end_date}', 'NotaServiceController@reportEarning');
+        });
     });
 
-    Route::group(['prefix' => 'tagihan', 'middleware' => 'admin'], function() {
-        Route::get('index', 'TagihanController@index');
-        Route::post('status/{id}', 'TagihanController@status');
-    });
-
-    Route::group(['prefix' => 'calon-mahasiswa', 'middleware' => 'admin'], function() {
-        Route::get('index', 'CalonMahasiswaController@index');
-        Route::post('status-tes/{id}', 'CalonMahasiswaController@statusTes');
-    });
+    
 
     Route::group(['prefix' => 'datatable'], function() {
         Route::post('user', 'DatatableController@user');
-        Route::post('gelombang', 'DatatableController@gelombang');
-        Route::post('kategori-jurusan', 'DatatableController@kategoriJurusan');
-        Route::post('jurusan', 'DatatableController@jurusan');
-        Route::post('peminat', 'DatatableController@peminat');
-        Route::post('calon-mahasiswa', 'DatatableController@calonMahasiswa');
-        Route::post('tagihan', 'DatatableController@tagihan');
+        Route::post('kupon', 'DatatableController@kupon');
+        Route::post('mekanik', 'DatatableController@mekanik');
+        Route::post('service', 'DatatableController@service');
+        Route::post('service-barang', 'DatatableController@serviceBarang');
+        Route::post('nota-service', 'DatatableController@notaService');
     });
-});
-
-Route::group(['prefix' => 'user'], function() {
-    Route::post('list-jurusan', 'JurusanController@list');
-
-    Route::get('calon-mahasiswa/formulir', 'CalonMahasiswaController@formulir');
-    Route::post('calon-mahasiswa/upload-bukti-bayar', 'CalonMahasiswaController@uploadBuktiBayar');
-    Route::post('calon-mahasiswa/pengisian-data', 'CalonMahasiswaController@pengisianData');
 });
 
