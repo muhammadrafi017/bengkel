@@ -26,7 +26,7 @@ class KuponController extends Controller
         if ($request->q) {
             $kupon = Kupon::where('nama', 'like', '%'.$request->q.'%')->get();
         } elseif ($request->has('point_member')) {
-            $kupon = Kupon::where('point', '<=', $request->point_member)->first();
+            $kupon = Kupon::where('point', '<=', $request->point_member)->get();
         } else {
             $kupon = Kupon::get();
         }

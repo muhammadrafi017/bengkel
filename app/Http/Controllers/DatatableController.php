@@ -67,10 +67,13 @@ class DatatableController extends Controller
         $data = Produk::get();
         return $datatables->of($data)
         ->editColumn('foto_produk', function($data) {
-            return '<img class="img-fluid" src="'.Storage::url('produk/'.$data->foto_produk).'"></img>';
+            return '<img class="img-fluid" style="max-height:16vh;" src="'.Storage::url('produk/'.$data->foto_produk).'"></img>';
         })
         ->addColumn('action', function($data) {
-            return '-';
+            if ($data->status == 'tidak-ada') {
+                return 'tidak ada';
+            }
+            return '<button value="'.$data->id.'" data-content="'.url('produk').'" class="btn btn-primary plus-button"><i class="fa fa-plus"></i></button>';
         })
         ->rawColumns(['foto_produk', 'action'])
         ->make(true);
