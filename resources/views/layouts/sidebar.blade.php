@@ -46,12 +46,12 @@
             <span>Kupon</span>
         </a>
     </li>
-    {{-- <li class="nav-item">
+    <li class="nav-item">
         <a class="nav-link" href="{{ url('produk') }} ">
             <i class="fas fa-fw fa-home"></i>
             <span>Produk</span>
         </a>
-    </li> --}}
+    </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ url('service') }} ">
             <i class="fas fa-fw fa-home"></i>
@@ -70,7 +70,7 @@
                 <span>Order Service</span>
             </a>
         </li>
-        {{-- <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#penjualanProduk"
             aria-expanded="true" aria-controls="penjualanProduk">
             <i class="fas fa-fw fa-home"></i>
@@ -80,11 +80,11 @@
         data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Jenis:</h6>
-                    <a class="collapse-item" href="utilities-color.html">Online</a>
-                    <a class="collapse-item" href="utilities-border.html">Offline</a>
+                    <a class="collapse-item" href="{{ url('produk-transaksi/online') }}">Online</a>
+                    <a class="collapse-item" href="{{ url('produk-transaksi/offline') }}">Offline</a>
                 </div>
             </div>
-        </li> --}}
+        </li>
         <hr class="sidebar-divider">
         <div class="sidebar-heading">
             Laporan

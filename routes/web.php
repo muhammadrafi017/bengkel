@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::group(['middleware' => 'actor:owner,admin,member'], function() {
         Route::post('kupon/list', 'KuponController@list');
+        Route::post('produk/list', 'ProdukController@list');
         Route::post('service/list', 'ServiceController@list');
         Route::post('mekanik/list', 'MekanikController@list');
     });
@@ -52,6 +53,14 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('store', 'KuponController@store');
         Route::post('update/{id}', 'KuponController@update');
         Route::delete('delete/{id}', 'KuponController@delete');
+    });
+
+    Route::group(['prefix' => 'produk', 'middleware' => 'actor:owner'], function() {
+        Route::get('', 'ProdukController@index');
+        Route::get('form/{type}/{id?}', 'ProdukController@form');
+        Route::post('store', 'ProdukController@store');
+        Route::post('update/{id}', 'ProdukController@update');
+        Route::delete('delete/{id}', 'ProdukController@delete');
     });
 
     Route::group(['prefix' => 'mekanik', 'middleware' => 'actor:owner'], function() {
@@ -90,6 +99,10 @@ Route::group(['middleware' => 'auth'], function() {
         });
     });
 
+    Route::group(['prefix' => 'produk-transaksi', 'middleware' => 'actor:owner,admin'], function() {
+        Route::get('offline', 'ProdukTransaksiController@offline');
+    });
+
     Route::group(['prefix' => 'nota'], function() {
         Route::group(['prefix' => 'service'], function() {
             Route::get('', 'NotaServiceController@index');
@@ -105,6 +118,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::group(['prefix' => 'datatable'], function() {
         Route::post('user', 'DatatableController@user');
         Route::post('kupon', 'DatatableController@kupon');
+        Route::post('produk', 'DatatableController@produk');
+        Route::post('produk-transaksi', 'DatatableController@produkTransaksi');
         Route::post('mekanik', 'DatatableController@mekanik');
         Route::post('service', 'DatatableController@service');
         Route::post('service-barang', 'DatatableController@serviceBarang');

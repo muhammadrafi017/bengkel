@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\User;
 use App\Kupon;
+use App\Produk;
 use App\Service;
 use App\Mekanik;
 use App\NotaService;
@@ -41,6 +42,37 @@ class DatatableController extends Controller
             return '<a href="'.url('kupon/form/edit/'.$data->id).'" class="btn btn-info edit-button"><i class="fa fa-edit"></i></a>
             <button value="'.$data->id.'" data-content="'.url('kupon').'" class="btn btn-warning delete-button"><i class="fa fa-trash"></i></button>';
         })
+        ->make(true);
+    }
+
+    public function produk(DataTables $datatables)
+    {
+        $data = Produk::get();
+        return $datatables->of($data)
+        ->editColumn('foto_produk', function($data) {
+            if ($data->foto_produk) {
+                return '<a href="'. Storage::url('produk/'.$data->foto_produk).'" target="_blank">'.$data->foto_produk.'</a>';
+            }
+        })
+        ->addColumn('action', function($data) {
+            return '<a href="'.url('produk/form/edit/'.$data->id).'" class="btn btn-info edit-button"><i class="fa fa-edit"></i></a>
+            <button value="'.$data->id.'" data-content="'.url('produk').'" class="btn btn-warning delete-button"><i class="fa fa-trash"></i></button>';
+        })
+        ->rawColumns(['foto_produk', 'action'])
+        ->make(true);
+    }
+
+    public function produkTransaksi(DataTables $datatables)
+    {
+        $data = Produk::get();
+        return $datatables->of($data)
+        ->editColumn('foto_produk', function($data) {
+            return '<img class="img-fluid" src="'.Storage::url('produk/'.$data->foto_produk).'"></img>';
+        })
+        ->addColumn('action', function($data) {
+            return '-';
+        })
+        ->rawColumns(['foto_produk', 'action'])
         ->make(true);
     }
 
