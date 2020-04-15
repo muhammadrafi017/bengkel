@@ -93,7 +93,7 @@
                                         <td>Sub Total</td>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                {{-- <tbody>
                                     @foreach ($data->serviceBarang as $key => $value)
                                         <tr>
                                             <td>{{ $value->barang->nama }}</td>
@@ -103,7 +103,7 @@
                                             <td>{{ number_format($value->harga_satuan*$value->jumlah,0,".",",") }}</td>
                                         </tr>
                                     @endforeach
-                                <tbody>
+                                <tbody> --}}
                             </table>
                             <table class="table table-condensed table-sm">
                                 <tbody>

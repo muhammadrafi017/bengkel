@@ -16,6 +16,7 @@ class CreateKuponTable extends Migration
         Schema::create('kupon', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nama');
+            $table->integer('kuantitas');
             $table->integer('point');
             $table->decimal('potongan', 9, 0);
             $table->timestamps();

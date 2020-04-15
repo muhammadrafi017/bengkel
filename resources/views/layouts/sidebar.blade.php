@@ -95,12 +95,6 @@
                 <span>Service barang</span>
             </a>
         </li>
-        {{-- <li class="nav-item">
-            <a class="nav-link" href="{{ url('order-service') }} ">
-                <i class="fas fa-fw fa-home"></i>
-                <span>Produk</span>
-            </a>
-        </li> --}}
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#nota"
             aria-expanded="true" aria-controls="nota">
@@ -112,7 +106,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Jenis:</h6>
                     <a class="collapse-item" href="{{ url('nota/service') }}">Service Barang</a>
-                    {{-- <a class="collapse-item" href="{{ url('nota/product') }}">Penjualan Produk</a> --}}
+                    <a class="collapse-item" href="{{ url('nota/produk') }}">Penjualan Produk</a>
                 </div>
             </div>
         </li>

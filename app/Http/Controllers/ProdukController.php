@@ -9,15 +9,27 @@ use App\Produk;
 
 class ProdukController extends Controller
 {
-    private function validation($type, $request, $id = null) {
-        $this->validate($request, [
-            'nama' => 'required',
-            'satuan' => 'required',
-            'kuantitas' => 'required|integer',
-            'harga_satuan' => 'required|numeric',
-            'foto_produk_file' => 'required|mimes:jpg,png,jpeg',
-            'status' => 'required|in:ada,tidak-ada',
-        ]);
+    private function validation($type, $request, $id = null)
+    {    
+        if ($type == 'store') {
+            $this->validate($request, [
+                'nama' => 'required',
+                'satuan' => 'required',
+                'kuantitas' => 'required|integer',
+                'harga_satuan' => 'required|numeric',
+                'foto_produk_file' => 'required|mimes:jpeg,jpg,png',
+                'status' => 'required|in:ada,tidak-ada'
+            ]);
+        } else {
+            $this->validate($request, [
+                'nama' => 'required',
+                'satuan' => 'required',
+                'kuantitas' => 'required|integer',
+                'harga_satuan' => 'required|numeric',
+                'foto_produk_file' => 'mimes:jpeg,jpg,png',
+                'status' => 'required|in:ada,tidak-ada'
+            ]);
+        }
     }
 
     public function index()

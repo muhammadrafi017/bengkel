@@ -8,4 +8,7 @@ class Produk extends Model
 {
     protected $table = 'produk';
     protected $guarded = ['id'];
+    protected $cast = [
+        'harga_satuan' => 'float'
+    ];
 }

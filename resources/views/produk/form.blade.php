@@ -31,7 +31,7 @@
                         </div>
                         <div class="form-group col-12">
                             <label for="">Harga Satuan</label>
-                            <input type="text" class="form-control" name="harga_satuan" value="{{ $data? $data->harga_satuan : '' }}" id="" oninput="inputRupiah(event)">
+                            <input type="text" class="form-control balance" name="harga_satuan" value="{{ $data? $data->harga_satuan : '' }}" id="" oninput="inputRupiah(event)">
                         </div>
                         <div class="form-group col-12">
                             <label for="">Foto Produk <a href="{{ $data? $data->foto_produk? Storage::url('produk/'.$data->foto_produk) : '' : '' }}" target="_blank">{{ $data?  $data->foto_produk : '' }}</a></label>

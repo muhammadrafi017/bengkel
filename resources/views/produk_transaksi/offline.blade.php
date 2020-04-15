@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-<meta name="base_url" content="{{ url('produk/transaction/offline') }}">
+<meta name="base_url" content="{{ url('produk-transaksi/offline') }}">
 
 @section('content')
 <div class="row">
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <form id="form" action="{{ url('service-barang/store-order') }}">
+                <form id="form" action="{{ url('produk-transaksi/store-offline') }}">
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
@@ -91,8 +91,7 @@
                                 <h6 class="mt-2 font-weight-bold text-primary">
                                     Keranjang
                                 </h6>
-                                <div class="row produk-cart">
-                                </div>
+                                <div class="row produk-cart"></div>
                                 {{-- <div class="card-footer"> --}}
                                     <h6 class="mt-2 font-weight-bold text-primary">
                                         Total
@@ -113,7 +112,7 @@
 @push('js')
 <script>
     $(document).ready(function() {
-        table = $('#datatable').DataTable({
+        let datatable = $('#datatable').DataTable({
             processing: true,
             serverSide: true,
             autoWidth: false,
@@ -159,22 +158,25 @@
                         success: function(data) {
                             let table_coupon;
                             $.each(data.data, function(key, value) {
-                                console.log(value);
-                                table_coupon += '<tr>'
-                                    + '<th>'
-                                        + '<div class="form-check">'
-                                            + '<input class="form-check-input" type="radio" name="generated-id-coupon" value="'+value.id+'">'
-                                        + '</div>'
-                                    + '</th>'
-                                    + '<th>'+value.nama+'</th>'
-                                    + '<th>'+value.point+'</th>'
-                                    + '<th>'+value.potongan+'</th>'
-                                + '</tr>';
+                                table_coupon += `
+                                    <tr>
+                                        <th>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="generated-id-coupon" value='${value.id}'>
+                                            </div>
+                                        </th>
+                                        <th>${value.nama}</th>
+                                        <th>${value.point}</th>
+                                        <th>${value.potongan}</th>
+                                    </tr>
+                                `;
                             });
                             $('#kupon').show();
-                            $('#table-coupon').append('<tbody class="generated-coupon">'
-                                + table_coupon
-                            + '</tbody>');
+                            $('#table-coupon').append(`
+                                <tbody class="generated-coupon">'
+                                    ${table_coupon}
+                                </tbody>
+                            `);
                             $('input[name="generated-id-coupon"]').change(function() {
                                 let id_kupon = $(this).val();
                                 $('input[name="id_kupon"]').val(id_kupon);
@@ -189,11 +191,11 @@
         });
         $(document).on('click', '.plus-button', function(e) {
             e.preventDefault();
-            let data = table.row( $(this).parents('tr') ).data();
+            let data = datatable.row( $(this).parents('tr') ).data();
             if (!$('.removeable').is('#produk-'+data.id)) {
                 $('.produk-cart').append(`
                     <div id="produk-${data.id}" class="col-12 row removeable">
-                        <input type="hidden" name="produk[id_produk][0]" value="${data.id}">
+                        <input type="hidden" name="data[${data.id}][id_produk]" value="${data.id}">
                         <div class="col-9">
                             <div class="form-group">
                                 <input type="text" class="form-control" id="" readonly value="${data.nama}">
@@ -201,7 +203,7 @@
                         </div>
                         <div class="col-3">
                             <div class="form-group">
-                                <input type="text" class="form-control kuantitas" name="produk[kuantitas][0]" id="kuantitas-${data.id}" value="1">
+                                <input type="text" class="form-control kuantitas" name="data[${data.id}][kuantitas]" id="kuantitas-${data.id}" value="1">
                             </div>
                         </div>
                         <div class="col-12">

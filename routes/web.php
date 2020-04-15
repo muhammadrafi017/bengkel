@@ -101,6 +101,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::group(['prefix' => 'produk-transaksi', 'middleware' => 'actor:owner,admin'], function() {
         Route::get('offline', 'ProdukTransaksiController@offline');
+        Route::post('store-offline', 'ProdukTransaksiController@storeOffline');
     });
 
     Route::group(['prefix' => 'nota'], function() {
@@ -110,6 +111,13 @@ Route::group(['middleware' => 'auth'], function() {
             Route::post('taking/{id}', 'NotaServiceController@updateTaking');
             Route::get('print/{id}', 'NotaServiceController@print');
             Route::get('report/earning/{start_date}/{end_date}', 'NotaServiceController@reportEarning');
+        });
+        Route::group(['prefix' => 'produk'], function() {
+            Route::get('', 'NotaProdukController@index');
+            Route::post('payment/{id}', 'NotaProdukController@updatePayment');
+            Route::post('taking/{id}', 'NotaProdukController@updateTaking');
+            Route::get('print/{id}', 'NotaProdukController@print');
+            Route::get('report/earning/{start_date}/{end_date}', 'NotaProdukController@reportEarning');
         });
     });
 
@@ -124,6 +132,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('service', 'DatatableController@service');
         Route::post('service-barang', 'DatatableController@serviceBarang');
         Route::post('nota-service', 'DatatableController@notaService');
+        Route::post('nota-produk', 'DatatableController@notaProduk');
     });
 });
 

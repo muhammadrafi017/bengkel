@@ -15,6 +15,7 @@ use App\Service;
 use App\Mekanik;
 use App\NotaService;
 use App\ServiceBarang;
+use App\NotaProduk;
 
 class DatatableController extends Controller
 {
@@ -209,6 +210,57 @@ class DatatableController extends Controller
             }
             $button .= '<a id="print-button" href="'.url('nota/service/print').'/'.$data->id.'" target="_blank" class="btn btn-info btn-sm print-button"> <i class="fa fa-print"></i> </a>';
             if ($data->status_pembayaran == 'lunas' && $data->status_pengambilan == 'belum-ambil' && $total == $selesai) {
+                $button .= '<button id="take" value="'.$data->id.'"  class="btn btn-sm btn-warning take-button"><i class="fa fa-check-circle"></i> </button>';
+            }
+            $button .= '</div>';
+            return $button;
+        })
+        ->rawColumns(['status_pembayaran', 'status_pengambilan', 'action'])
+        ->make(true);
+    }
+
+    public function notaProduk(Datatables $datatable, Request $request)
+    {
+        $data = NotaProduk::with('admin')->whereBetween('created_at', [$request->start_date, $request->end_date])->get();
+        return $datatable->of($data)
+        ->editColumn('potongan_harga', function($data) {
+            return number_format($data->potongan_harga, 0, '.', '.');
+        })
+        ->editColumn('total_harga', function($data) {
+            return number_format($data->total_harga, 0, '.', '.');
+        })
+        ->editColumn('status_pembayaran', function($data) {
+            if ($data->status_pembayaran == 'belum-lunas') {
+                return '<h6><span class="badge badge-warning">'. str_replace('-',' ',ucfirst($data->status_pembayaran)) .'</span></h6>';
+            }
+            return '<h6><span class="badge badge-success">'. str_replace('-',' ',ucfirst($data->status_pembayaran)) .'</span></h6>';
+        })
+
+        ->editColumn('status_pengambilan', function($data) {
+            if ($data->status_pengambilan == 'belum-ambil') {
+                return '<h6><span class="badge badge-warning">'. str_replace('-',' ',ucfirst($data->status_pengambilan)) .'</span></h6>';
+            }
+            return '<h6><span class="badge badge-success">'. str_replace('-',' ',ucfirst($data->status_pengambilan)) .'</span></h6>';
+        })
+        ->editColumn('tanggal_pembayaran', function($data) {
+            if ($data->tanggal_pembayaran) {
+                return date('d-m-Y H:i:s', strtotime($data->tanggal_pembayaran));
+            }
+            return '-';
+        })
+        ->editColumn('tanggal_pengambilan', function($data) {
+            if ($data->tanggal_pengambilan) {
+                return date('d-m-Y H:i:s', strtotime($data->tanggal_pengambilan));
+            }
+            return '-';
+        })
+        ->addColumn('action', function($data) {
+            $button = '<div class="btn-group" role="group" aria-label="Action Button">';
+            if ($data->status_pembayaran == 'belum-lunas') {
+                $button .= '<button id="payment" value="'.$data->id.'"  class="btn btn-sm btn-success payment-button"><i class="fa fa-money-bill"></i> </button>';
+            }
+            $button .= '<a id="print-button" href="'.url('nota/produk/print').'/'.$data->id.'" target="_blank" class="btn btn-info btn-sm print-button"> <i class="fa fa-print"></i> </a>';
+            if ($data->status_pembayaran == 'lunas' && $data->status_pengambilan == 'belum-ambil') {
                 $button .= '<button id="take" value="'.$data->id.'"  class="btn btn-sm btn-warning take-button"><i class="fa fa-check-circle"></i> </button>';
             }
             $button .= '</div>';

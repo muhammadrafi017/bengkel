@@ -64,7 +64,7 @@ class NotaServiceController extends Controller
         $data = NotaService::where('id', $id)->with(
             'admin', 'member','kupon','serviceBarang.barang', 'serviceBarang.mekanik', 'serviceBarang.service'
         )->first();
-        return view('print.invoice', compact('data'));
+        return view('print.invoice-service', compact('data'));
     }
 
     public function reportEarning($start_date, $end_date)
