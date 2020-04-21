@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('mekanik/list', 'MekanikController@list');
     });
 
-    Route::group(['prefix' => 'dashboard', 'middleware' => 'actor:owner,admin'], function() {
+    Route::group(['prefix' => 'dashboard', 'middleware' => 'actor:owner,admin,member'], function() {
         Route::get('', 'DashboardController@index');
     });
 

@@ -111,6 +111,9 @@
             </div>
         </li>
     @endif
+    @if (auth()->user()->hasAnyActors(['member']))
+        
+    @endif
     
     {{-- <!-- Nav Item - Utilities Collapse Menu -->
         <li class="nav-item">
